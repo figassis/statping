@@ -1,0 +1,26 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - deploy
+  pull_request:
+    branches:
+      - deploy
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Current branch
+        uses: actions/checkout@v1
+      - name: Build Docker Image
+        run: |
+          make docker-base
+          VERSION=`cat version.txt`
+          docker build -t ${DOCKER_USERNAME}/statping:v${VERSION} --build-arg VERSION=${VERSION} .
+          docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+          docker push ${DOCKER_USERNAME}/statping:v${VERSION}
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
