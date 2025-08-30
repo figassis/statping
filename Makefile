@@ -301,6 +301,15 @@ dockerhub:
 	docker push statping/statping:v${VERSION}
 	docker push statping/statping
 
+publish:
+	docker buildx build --build-arg VERSION=${VERSION} \
+	--platform linux/amd64,linux/arm64 -t nellcorp/statping:base -f Dockerfile.base --push .
+	
+	docker buildx build --build-arg VERSION=${VERSION} \
+	--no-cache --platform linux/amd64,linux/arm64 \
+	-t nellcorp/statping:v${VERSION} \
+	-t nellcorp/statping:latest . --push
+
 docker-build-dev:
 	docker build --build-arg VERSION=${VERSION} -t statping/statping:latest --no-cache -f Dockerfile .
 	docker tag statping/statping:latest statping/statping:dev-v${VERSION}
