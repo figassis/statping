@@ -12,5 +12,5 @@ jobs:
       - uses: actions/checkout@v2
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
-        - name: publish
-          run: make publish
+      - name: publish
+        run: make publish
